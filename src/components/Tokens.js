@@ -135,6 +135,34 @@ class Tokens extends Component {
     }
   }
 
+  _compraTokens = async(_numTokens) => {
+    try {
+      console.log("Compra de tokens en ejecución");
+      const web3 = window.web3;
+      const ethers = web3.utils.toWei(_numTokens, 'ether');
+      await this.state.contract.methods.compraTokens(_numTokens).send({
+        from: this.state.account,
+        value: ethers
+      });
+      Swal.fire({
+        icon: "success",
+        title: '¡Compra de tokens realizada!',
+        width: 800,
+        padding: "3em",
+        text: `Has comprado ${_numTokens} token/s por un valor de ${ethers / 10**18} ether/s`,
+        backdrop: `
+           rgba(15, 238, 168, 0.2)
+           left top
+           no-repeat
+        `
+      });
+    } catch(err) {
+      this.setState({errorMessage: err});
+    } finally {
+     this.setState({loading: false});
+    }
+  }
+
   render() {
     return (
       <div>
@@ -185,6 +213,21 @@ class Tokens extends Component {
                 </Container>
                 &nbsp;
                 <h3>Compra de Tokens ERC-20</h3>
+                <form onSubmit={(event) => {
+                   event.preventDefault()
+                   const cantidad = this._numTokens.value
+                   this._compraTokens(cantidad)
+                }}>
+                  <input type="number" 
+                     className="form-control mb-1"
+                     placeholder='Cantidad de tokens a comprar'
+                     ref={(input) => this._numTokens = input} />
+                    <input type="submit" 
+                            className="btn btn-block btn-primary btn-sm"
+                            value="COMPRAR TOKENS" />                   
+                  </form>
+                  &nbsp;
+                   <h3>Devolución de tokens ERC-20</h3>
               </div>
             </main>
           </div>
