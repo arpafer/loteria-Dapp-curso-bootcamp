@@ -75,7 +75,7 @@ class Tokens extends Component {
           title: 'Balance de tokens del usuario:',
           width: 800,
           padding: "3em",
-          text: `${_balance}`,
+          text: `${_balance} tokens`,
           backdrop: `
              rgba(15, 238, 168, 0.2)
              left top
@@ -87,6 +87,52 @@ class Tokens extends Component {
      } finally {
       this.setState({loading: false});
      }
+  }
+
+  _balanceTokensSC = async() => {
+    try {
+      console.log("Balance de tokens del Smart Contract en ejecución...");
+      const _balanceTokensSC = await this.state.contract.methods.balanceTokensSC().call();
+      Swal.fire({
+        icon: "info",
+        title: 'Balance de tokens del Smart Contract:',
+        width: 800,
+        padding: "3em",
+        text: `${_balanceTokensSC} tokens`,
+        backdrop: `
+           rgba(15, 238, 168, 0.2)
+           left top
+           no-repeat
+        `
+      });
+    } catch(err) {
+      this.setState({errorMessage: err});
+    } finally {
+     this.setState({loading: false});
+    }
+  }
+
+  _balanceEthersSC = async() => {
+    try {
+       console.log("Balance de ethers del Smart Contract ")
+       const _balanceEthersSC = await this.state.contract.methods.balanceEthersSC().call();
+       Swal.fire({
+        icon: "info",
+        title: 'Balance de Ethers del Smart Contract:',
+        width: 800,
+        padding: "3em",
+        text: `${_balanceEthersSC} ethers`,
+        backdrop: `
+           rgba(15, 238, 168, 0.2)
+           left top
+           no-repeat
+        `
+      });
+    } catch(err) {
+      this.setState({errorMessage: err});
+    } finally {
+     this.setState({loading: false});
+    }
   }
 
   render() {
@@ -103,7 +149,7 @@ class Tokens extends Component {
                 <Container>
                   <Row>
                     <Col>
-                      <h3>Tokens usuario</h3>
+                      <h4>Tokens usuario</h4>
                       <form onSubmit={(event) => {
                         event.preventDefault();
                         this._balanceTokens();
@@ -114,10 +160,31 @@ class Tokens extends Component {
                       </form>
                     </Col>
                     <Col>
-                       <h3>Tokens SC</h3>
+                       <h4>Tokens SC</h4>
+                       <form onSubmit={(event) => {
+                        event.preventDefault();
+                        this._balanceTokensSC();
+                      }}>
+                        <input type="submit" 
+                            className="btn btn-block btn-info btn-sm"
+                            value="BALANCE DE TOKENS (SC)" />
+                      </form>
+                    </Col>
+                    <Col>
+                      <h4>Ethers SC</h4>
+                      <form onSubmit={(event) => {
+                        event.preventDefault();
+                        this._balanceEthersSC();
+                      }}>
+                        <input type="submit" 
+                            className="btn btn-block btn-danger btn-sm"
+                            value="BALANCE DE ETHERS (SC)" />
+                      </form>
                     </Col>
                   </Row>
                 </Container>
+                &nbsp;
+                <h3>Compra de Tokens ERC-20</h3>
               </div>
             </main>
           </div>
