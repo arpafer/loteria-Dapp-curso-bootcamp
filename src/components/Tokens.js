@@ -163,6 +163,31 @@ class Tokens extends Component {
     }
   }
 
+  _devolverTokens = async(_numTokens) => {
+     try {
+       console.log("Devolución de tokens ERC-20 en ejecución...");
+       await this.state.contract.methods.devolverTokens(_numTokens).send({
+         from: this.state.account
+       });
+       Swal.fire({
+        icon: "warning",
+        title: '¡Devolución de tokens ERC-20!',
+        width: 800,
+        padding: "3em",
+        text: `Has devuelto ${_numTokens} token/s`,
+        backdrop: `
+           rgba(15, 238, 168, 0.2)
+           left top
+           no-repeat
+        `
+      });
+     } catch(err) {
+      this.setState({errorMessage: err});
+     } finally {
+       this.setState({loading: false});
+     }
+  }
+
   render() {
     return (
       <div>
@@ -227,7 +252,20 @@ class Tokens extends Component {
                             value="COMPRAR TOKENS" />                   
                   </form>
                   &nbsp;
-                   <h3>Devolución de tokens ERC-20</h3>
+                 <h3>Devolución de tokens ERC-20</h3>
+                   <form onSubmit={(event) => {
+                     event.preventDefault()
+                     const cantidad = this._numTokensDevolver.value
+                     this._devolverTokens(cantidad)
+                   }}>
+                    <input type="number" 
+                     className="form-control mb-1"
+                     placeholder='Cantidad de tokens a devolver'
+                     ref={(input) => this._numTokensDevolver = input} />
+                    <input type="submit" 
+                            className="btn btn-block btn-warning btn-sm"
+                            value="DEVOLVER TOKENS" />                                     
+                   </form>
               </div>
             </main>
           </div>
