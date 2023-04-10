@@ -89,6 +89,51 @@ class Loteria extends Component {
      }
   }
 
+  _precioBoleto = async() => {
+    try {
+      console.log("Precio del boleto en ejecución...");
+      const _precio = await this.state.contract.methods.precioBoleto().call();
+      Swal.fire({
+        icon: "info",
+        title: `El precio del boleto es: ${_precio} tokens (ERC-20)`,
+        width: 800,
+        padding: "3em",        
+        backdrop: `
+           rgba(15, 238, 168, 0.2)
+           left top
+           no-repeat
+        `
+      });
+    } catch (err) {
+      this.setState({errorMessage: err});
+     } finally {
+       this.setState({loading: false});
+     }
+  }
+
+  _tusBoletos = async() => {
+    try {
+      console.log("Visualización de tus boletos en ejecución...");
+      const _boletos = await this.state.contract.methods.viewBoletos(this.state.account).call();
+      Swal.fire({
+        icon: "info",
+        title: `Tus boletos son:`,
+        width: 800,
+        padding: "3em",        
+        text: `${_boletos}`,
+        backdrop: `
+           rgba(15, 238, 168, 0.2)
+           left top
+           no-repeat
+        `
+      });
+    } catch (err) {
+      this.setState({errorMessage: err});
+    } finally {
+      this.setState({loading: false});
+    }
+  }
+
    render() {
     return (
       <div>
@@ -116,7 +161,35 @@ class Loteria extends Component {
                        value="COMPRAR BOLETOS"
                        />      
                </form>
-
+               &nbsp;
+               <Container>
+                <Row>
+                  <Col>
+                   <h3>Precio Boleto</h3>
+                   <form onSubmit={(event) => {
+                     event.preventDefault();
+                     this._precioBoleto()                                         
+                   }}>
+                       <input type="submit" 
+                       className='btn btn-block btn-danger btn-sm' 
+                       value="PRECIO BOLETO"
+                       /> 
+                   </form>
+                  </Col>
+                  <Col>
+                    <h3>Tus Boletos </h3>
+                    <form onSubmit={(event) => {
+                      event.preventDefault();
+                      this._tusBoletos();
+                    }}>
+                       <input type="submit" 
+                       className='btn btn-block btn-success btn-sm' 
+                       value="TUS BOLETOS"
+                       /> 
+                    </form>
+                  </Col>
+                </Row>
+               </Container>
               </div>
             </main>
           </div>
