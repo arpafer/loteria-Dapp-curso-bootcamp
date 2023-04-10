@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import smart_contract from '../abis/Loteria.json';
 import Web3 from 'web3';
 import Swal from 'sweetalert2';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 import Navigation from './Navbar';
 import MyCarousel from './Carousel';
-import { Container } from 'react-bootstrap';
+
 
 class Ganador extends Component {
 
@@ -65,6 +63,51 @@ class Ganador extends Component {
       errorMessage: ""
     }
   }
+  
+  _generarGanador = async() => {
+     try {
+        console.log("Generación de ganador ejecutándose...");
+        await this.state.contract.methods.generarGanador().send({from: this.state.account});
+        Swal.fire({
+          icon: "success",
+          title: '¡Ganador generado correctamente!',
+          width: 800,
+          padding: "3em",          
+          backdrop: `
+             rgba(15, 238, 168, 0.2)
+             left top
+             no-repeat
+          `
+        });
+     } catch (err) {
+       this.setState({errorMessage: err})
+     } finally {
+        this.setState({loading: false});
+     }
+  }
+
+  _ganador = async() => {
+    try {
+       console.log("Visualización del ganador en ejecución...");
+       const winner = await this.state.contract.methods.ganador().call();
+       Swal.fire({
+        icon: "info",
+        title: 'El ganador de la Lotería es:',
+        text: `${winner}`,
+        width: 800,
+        padding: "3em",          
+        backdrop: `
+           rgba(15, 238, 168, 0.2)
+           left top
+           no-repeat
+        `
+      });
+    } catch (err) {
+      this.setState({errorMessage: err})
+    } finally {
+       this.setState({loading: false});
+    }
+  }
 
    render() {
     return (
@@ -75,8 +118,24 @@ class Ganador extends Component {
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
-                
-                
+                <h1>Generación de un ganador en la lotería</h1>
+                <form onSubmit={(event) => {
+                  event.preventDefault()
+                  this._generarGanador()
+                }}>
+                  <input type="submit"
+                     className = "btn btn-block btn-info btn-sm"
+                     value="GENERAR GANADOR" />
+                </form>
+                &nbsp;
+                <form onSubmit={(event) => {
+                  event.preventDefault()
+                  this._ganador()
+                }}>
+                  <input type="submit"
+                     className = "btn btn-block btn-success btn-sm"
+                     value="VISUALIZAR GANADOR" />
+                </form>
               </div>
             </main>
           </div>

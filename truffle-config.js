@@ -18,10 +18,10 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
-// const fs = require('fs');
-//const mnemonic = fs.readFileSync(".secret").toString().trim();
+const fs = require('fs');
+const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
   /**
@@ -45,6 +45,23 @@ module.exports = {
       port: 7545,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
     },   
+
+    bsc: {
+      provider: () => new HDWalletProvider(mnemonic,
+        'https://data-seed-prebsc-1-s1.binance.org:8545'),
+        network_id: 97,
+        confirmations: 1,
+        timeoutBlocks: 200,
+        skipDryRun: true
+    },
+
+    polygon: {
+      provider: () => new HDWalletProvider(mnemonic, `https://rpc-mumbai.maticvigil.com/v1/07c8e0cbdf308b82d724160da9342e4a451d62fe`),
+      network_id: 80001,
+      confirmations: 1,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    }   
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
