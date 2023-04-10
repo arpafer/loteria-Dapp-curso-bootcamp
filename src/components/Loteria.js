@@ -66,6 +66,29 @@ class Loteria extends Component {
     }
   }
 
+  _compraBoletos = async(_numBoletos) => {
+     try {
+        console.log("Compra de boletos de lotería en ejecución...");
+        await this.state.contract.methods.comprarBoleto(_numBoletos).send({ from: this.state.account })
+        Swal.fire({
+          icon: "success",
+          title: 'Compra de boletos completada, ¡mucha suerte!',
+          width: 800,
+          padding: "3em",
+          text: `Has comprado ${_numBoletos} boletos`,
+          backdrop: `
+             rgba(15, 238, 168, 0.2)
+             left top
+             no-repeat
+          `
+        });
+     } catch (err) {
+       this.setState({errorMessage: err});
+     } finally {
+       this.setState({loading: false});
+     }
+  }
+
    render() {
     return (
       <div>
@@ -75,8 +98,25 @@ class Loteria extends Component {
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
-                
-                
+                <h1>Gestión de la Lotería con ERC-20 y ERC-721</h1>
+                <h3>Compra de boletos</h3>
+               <form onSubmit={(event) => {
+                 event.preventDefault();
+                 const cantidad = this._numBoletos.value;
+                 this._compraBoletos(cantidad);
+
+               }}>
+                 <input type="number"
+                        className='form-control mb-1'
+                        placeholder='Cantidad de boletos a comprar'
+                        ref={(input) => this._numBoletos = input} />
+
+                  <input type="submit" 
+                       className='btn btn-block btn-primary btn-sm' 
+                       value="COMPRAR BOLETOS"
+                       />      
+               </form>
+
               </div>
             </main>
           </div>
